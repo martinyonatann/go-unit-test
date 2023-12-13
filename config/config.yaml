@@ -1,0 +1,10 @@
+Server:
+  Port: "3002"
+  Debug: true
+
+Database:
+  Host: "127.0.0.1"
+  Port: "3306"
+  DBName: "go-unit-test"
+  UserName: "admin"
+  Password: "pwd"
