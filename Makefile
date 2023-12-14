@@ -42,7 +42,7 @@ e2e-test:
 	@echo "make e2e-test ${IS_IN_PROGRESS}"
 	@go clean -testcache
 	@go test --race -timeout=90s -failfast \
-		-vet= -cover -covermode=atomic -coverprofile=./.coverage/unit.out \
+		-vet= -cover -covermode=atomic -coverprofile=./.coverage/e2e.out \
 		-tags=e2e ./internal/users/delivery/...\
 
 ## tests: run tests and any dependencies
