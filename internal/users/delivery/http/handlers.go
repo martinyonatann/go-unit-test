@@ -41,5 +41,5 @@ func (h *handlers) DetailHandler(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"data": detail})
+	return c.JSON(http.StatusOK, detail)
 }

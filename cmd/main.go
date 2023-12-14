@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/labstack/echo/v4"
 	"github.com/martinyonatann/go-unit-test/config"
@@ -31,5 +32,5 @@ func main() {
 
 	http.MapRoutes(echoServer, handlers)
 
-	echoServer.Start(fmt.Sprintf(":%s", cfg.Database.Port))
+	log.Println(echoServer.Start(fmt.Sprintf(":%s", cfg.Server.Port)))
 }

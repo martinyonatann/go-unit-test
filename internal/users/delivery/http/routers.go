@@ -7,5 +7,5 @@ import (
 
 func MapRoutes(e *echo.Echo, h users.Handlers) {
 	e.POST("/users", h.CreateHandler)
-	e.GET("/users", h.DetailHandler)
+	e.GET("/users/:id", h.DetailHandler)
 }

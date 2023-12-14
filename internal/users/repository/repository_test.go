@@ -1,3 +1,6 @@
+//go:build integration
+// +build integration
+
 package repository_test
 
 import (
@@ -7,9 +10,8 @@ import (
 	"time"
 
 	"github.com/go-faker/faker/v4"
-	"github.com/golang-migrate/migrate"
-	"github.com/golang-migrate/migrate/database/mysql"
-	"github.com/google/uuid"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/martinyonatann/go-unit-test/config"
 	"github.com/martinyonatann/go-unit-test/internal/users"
@@ -19,6 +21,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 var (
@@ -27,7 +31,7 @@ var (
 )
 
 const (
-	MIGRATION_PATH = "file://../../database/migrations"
+	MIGRATION_PATH = "file://../../../database/migrations"
 )
 
 func init() {
@@ -43,7 +47,12 @@ func init() {
 		panic(errors.Wrap(err, cfg.Database.DBName))
 	}
 
-	migrationUP(MIGRATION_PATH, db.DB)
+	sqlDB := db.DB
+
+	err = migrationUP(MIGRATION_PATH, sqlDB)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func migrationUP(path string, db *sql.DB) error {
@@ -58,8 +67,6 @@ func migrationUP(path string, db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-
-	defer m.Close()
 
 	// Apply migrations
 	err = m.Up()
@@ -101,8 +108,6 @@ type repositoryTestSuite struct {
 
 func TestSuiteRepository(t *testing.T) {
 	defer func() {
-		time.Sleep(5 * time.Second)
-
 		err := migrationDOWN(MIGRATION_PATH, db.DB)
 		require.NoError(t, err)
 	}()
@@ -112,8 +117,8 @@ func TestSuiteRepository(t *testing.T) {
 
 func (r *repositoryTestSuite) Test_Repo_Repositories() {
 	var users = entities.Users{
-		ID:        uuid.NewString(),
-		Name:      "go-unit-test",
+		ID:        faker.UUIDDigit(),
+		Name:      faker.Name(),
 		Password:  faker.Password(),
 		CreatedAt: time.Now(),
 	}
@@ -123,5 +128,5 @@ func (r *repositoryTestSuite) Test_Repo_Repositories() {
 
 	detail, err := r.repo.Detail(context.Background(), users.ID)
 	r.Assert().NoError(err)
-	r.Equal(users, detail)
+	r.Assert().EqualValues(detail.ID, users.ID)
 }

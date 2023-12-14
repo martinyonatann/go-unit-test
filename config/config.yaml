@@ -5,6 +5,6 @@ Server:
 Database:
   Host: "127.0.0.1"
   Port: "3306"
-  DBName: "go-unit-test"
-  UserName: "admin"
+  DBName: "go_unit_test"
+  UserName: "root"
   Password: "pwd"
